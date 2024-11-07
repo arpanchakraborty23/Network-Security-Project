@@ -2,5 +2,10 @@ pandas
 python-dotenv
 numpy
 pymongo
+flask
+mlflow
+dvc
+Dockerfile
+certifi
 
 -e .
