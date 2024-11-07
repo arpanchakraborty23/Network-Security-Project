@@ -18,4 +18,4 @@ logging.basicConfig(filename=LOG_FILE_PATH,
                     level=logging.INFO)
 
 if __name__=='__main__':
-    logging.info('logging started')
+    logging.info('Welcome To Network Security Project')
