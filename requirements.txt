@@ -8,5 +8,5 @@ dvc
 Dockerfile
 certifi
 scikit-learn
-
+scipy
 -e .

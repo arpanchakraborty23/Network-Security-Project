@@ -10,17 +10,44 @@ class TraningPiplineConfig:
       
 class DataIngestionConfig:
       def __init__(self,traning_pipline_config:TraningPiplineConfig) -> None:
+         
          self.data_ingestion_dir:str=os.path.join(
             traning_pipline_config.artifact_dir, traning_pipline.DATA_INGESTION_DIR_NAME ## creating data ingestion dir inside artifacts
 			)
          self.feature_store_file_path:str=os.path.join(
-            traning_pipline_config.artifact_dir, traning_pipline.DATA_INGESTION_FEATURE_STORE_DIR ,traning_pipline.FILE_NAME ## saving raw data in artifact with file name
+            self.data_ingestion_dir, traning_pipline.DATA_INGESTION_FEATURE_STORE_DIR ,traning_pipline.FILE_NAME ## saving raw data in artifact with file name
 			)
          self.traning_data_store_path:str=os.path.join(
-            traning_pipline_config.artifact_dir, traning_pipline.DATA_INGESTION__DIR, traning_pipline.TRAIN_FILE_NAME  ## artifacts folder , ingest folder , train data path
+            self.data_ingestion_dir, traning_pipline.DATA_INGESTION__DIR, traning_pipline.TRAIN_FILE_NAME  ## artifacts folder , ingest folder , train data path
 			)
          self.test_data_store_path:str=os.path.join(
-            traning_pipline_config.artifact_dir,traning_pipline.DATA_INGESTION__DIR, traning_pipline.TEST_FILE_NAME ## artifacts folder , ingest folder , test data path
+            self.data_ingestion_dir,traning_pipline.DATA_INGESTION__DIR, traning_pipline.TEST_FILE_NAME ## artifacts folder , ingest folder , test data path
 			)
          self.train_test_split_ratio:float=traning_pipline.DATA_INGESTION_TRAIN_TEST_SPLIT_RATIO
          
+class DataValidationConfig:
+    def __init__(self,traning_pipline_config:TraningPiplineConfig) -> None:
+      self.data_validation_dir:str=os.path.join(
+      	traning_pipline_config.artifact_dir,traning_pipline.DATA_VALIDATION_DIR_NAME ## crating data validaton folder inside artifacts
+		)
+      self.valid_dir_name:str=os.path.join(
+         self.data_validation_dir, traning_pipline.DATA_VALIDATION_VALID_DIR ## validated report folder inside data validation folder
+		)
+      self.invalid_dir_name:str=os.path.join(
+         self.data_validation_dir,traning_pipline.DATA_VALIDATION_INVALID_DIR ## invalid report folder inside data validation folder
+		)
+      self.drift_report_dir:str=os.path.join(
+         self.data_validation_dir,traning_pipline.DATA_VALIDATION_DRIFT_REPORT_DIR,traning_pipline.DATA_VALIDATION_DRIFT_REPORT_FILE_NAME # data validation dir, drift report dir, report name
+		)
+      self.valid_traning_data_store_path:str=os.path.join(
+         traning_pipline_config.artifact_dir, traning_pipline.DATA_INGESTION__DIR, traning_pipline.TRAIN_FILE_NAME  ## artifacts folder , ingest folder , train data path
+		)
+      self.valid_test_data_store_path:str=os.path.join(
+         traning_pipline_config.artifact_dir,traning_pipline.DATA_INGESTION__DIR, traning_pipline.TEST_FILE_NAME ## artifacts folder , ingest folder , test data path
+		)
+      self.invalid_traning_data_store_path:str=os.path.join(
+         traning_pipline_config.artifact_dir, traning_pipline.DATA_INGESTION__DIR, traning_pipline.TRAIN_FILE_NAME  ## artifacts folder , ingest folder , train data path
+		)
+      self.invalid_test_data_store_path:str=os.path.join(
+         traning_pipline_config.artifact_dir,traning_pipline.DATA_INGESTION__DIR, traning_pipline.TEST_FILE_NAME ## artifacts folder , ingest folder , test data path
+		)
