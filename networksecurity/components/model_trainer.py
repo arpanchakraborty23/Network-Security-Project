@@ -1,5 +1,6 @@
 import os
 import sys
+import mlflow
 import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
@@ -8,6 +9,12 @@ from sklearn.ensemble import RandomForestClassifier,BaggingClassifier
 from xgboost import XGBClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score
+import mlflow.sklearn
+from urllib.parse import urlparse
+from flask import request
+from mlflow.models import infer_signature
+from dotenv import load_dotenv
+load_dotenv
 
 from networksecurity.utils.utills import save_obj,load_numpy_arr,model_evaluatuion,load_obj,save_as_json
 from networksecurity.logging.logger import logging
@@ -17,6 +24,11 @@ from networksecurity.entity.config_entity import ModelTrainerConfig
 from networksecurity.utils.ml_utils.metrics import get_classification_score 
 from networksecurity.utils.ml_utils.model import NetworkModel
 
+
+os.environ['MLFLOW_TRACKING_URI'] = os.getenv('MLFLOW_TRACKING_URI')
+os.environ['MLFLOW_TRACKING_USERNAME'] = os.getenv('MLFLOW_TRACKING_USERNAME')
+os.environ['MLFLOW_TRACKING_PASSWORD'] = os.getenv('MLFLOW_TRACKING_PASSWORD')
+
 class ModelTrainer:
     def __init__(self,model_trainer_config:ModelTrainerConfig,
                  data_tansformation_artifacts:DataTransformationArtifact) -> None:
@@ -24,7 +36,36 @@ class ModelTrainer:
         self.model_trainer_config=model_trainer_config
         self.data_tansformation_artifacts=data_tansformation_artifacts
 
- 
+    def track_mlflow(self, best_model, clf_matric):
+        try:
+            logging.info('Starting MLflow tracking...')
+            
+            # Set the MLflow tracking URI from the environment variable
+            mlflow_uri = os.getenv('MLFLOW_TRACKING_URI')
+            if mlflow_uri is None:
+                raise ValueError("MLFLOW_TRACKING_URI environment variable is not set.")
+            mlflow.set_tracking_uri(mlflow_uri)
+
+            # Start an MLflow run
+            with mlflow.start_run(nested=True):
+                # Extract and log classification metrics
+                mlflow.log_metric('f1_score', clf_matric.f1_score)
+                mlflow.log_metric('precision_score', clf_matric.precision_score)
+                mlflow.log_metric('recall_score', clf_matric.recall_score)
+
+                # Log the model with or without registration, based on URI type
+                tracking_uri_type = urlparse(mlflow.get_tracking_uri()).scheme
+                if tracking_uri_type != 'file':
+                    mlflow.sklearn.log_model(best_model, 'model', registered_model_name='best_model')
+                else:
+                    mlflow.sklearn.log_model(best_model, 'model')
+
+            logging.info('MLflow experiment tracking completed successfully.')
+
+        except Exception as e:
+            logging.info("An error occurred during MLflow tracking.",str(e))
+            raise CustomException(e, sys)
+        
     def train_model(self,x_train,y_train,x_test,y_test):
         try:
             logging.info(' model evaluation started')
@@ -90,19 +131,33 @@ class ModelTrainer:
 
             # getting model traning metrices
             y_train_pred=best_model.predict(x_train)
+            classification_traning_metrics=get_classification_score(y_true=y_train,y_pred=y_train_pred)
 
-            classification_training_metrics=get_classification_score(y_true=y_train,y_pred=y_train_pred)
-            logging.info(f'Model traning report created successfully')
+            traning_scores={
+                'f1_score':classification_traning_metrics.f1_score,'presision_score':classification_traning_metrics.precision_score,'recall_score':classification_traning_metrics.recall_score
+                }
+            save_as_json(obj=traning_scores,file_path=self.model_trainer_config.model_train_metrics_path)
 
-            ## Track mlflow
+            logging.info(f'Model traning report save successfully')
+
+            ## Track training metrics with mlflow
+            self.track_mlflow(best_model,classification_traning_metrics)
+            mlflow.set_tracking_uri(os.getenv('MLFLOW_TRACKING_URI'))
             
             ## getting test metrices
             y_test_pred=best_model.predict(x_test)
             classification_test_metrics=get_classification_score(y_true=y_test,y_pred=y_test_pred)
-            logging.info(f'Model test report created successfully')
-            print(type(classification_training_metrics))
-           
-            print('metrices  report successfully')
+
+            test_scores={
+                'f1_score':classification_test_metrics.f1_score,'presision_score':classification_test_metrics.precision_score,'recall_score':classification_test_metrics.recall_score
+                }
+            save_as_json(obj=test_scores,file_path=self.model_trainer_config.model_test_metrics_path)
+            logging.info(f'Model test report save successfully')
+
+            ## Track training metrics with mlflow
+            self.track_mlflow(best_model,classification_test_metrics)
+            
+            print('metrices track successfully')
             
             
             preprocess_obj=load_obj(file_path=self.data_tansformation_artifacts.preprocess_obj_path)
@@ -118,7 +173,7 @@ class ModelTrainer:
             )
             logging.info(f'Model save in {self.model_trainer_config.model_file_path}')
 
-            return classification_training_metrics,classification_test_metrics
+            return classification_traning_metrics,classification_test_metrics
         
         except Exception as e:
             raise CustomException(e,sys)
