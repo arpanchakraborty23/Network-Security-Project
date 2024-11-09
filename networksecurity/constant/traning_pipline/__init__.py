@@ -20,6 +20,9 @@ SCHEMA_File_NAME: str='schema.yaml'
 PREPROCESSING_DIR_NAME: str = "preprocesser"
 PREPROCESSING_OBJECT_FILE_NAME: str = "preprocessing.pkl"
 
+MODEL_FILE_DIR:str="model"
+MODEL_FILE_NAME:str="model.pkl"
+
 """ 
     Data Ingestion related constant 
 """
@@ -51,3 +54,13 @@ DATA_TRANSFORMATION_IMPUTE_PARAMS:dict={
     'n_neighbors':3,
     'weights':'uniform'
 }
+
+"""
+    Model Trainer Config realated Constant
+"""
+MODEL_TRINER_DIR_NAME:str="model_trainer"
+MODEL_TRINER_MODEL_METRICS_DIR:str="metrics"
+MODEL_TRINER_MODEL_TRAIN_METRICS_FILE:str="train_metrics.json"
+MODEL_TRINER_MODEL_TEST_METRICS_FILE:str="test_metrics.json"
+MODEL_TRINER_EXPACTED_ACCURCY:float=0.7
+MODEL_TRINER_MODEL_OVERFITTING_UNDERFITTING_TH:float=0.05

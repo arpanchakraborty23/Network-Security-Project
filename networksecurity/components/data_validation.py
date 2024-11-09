@@ -149,8 +149,6 @@ class DataValidation:
                 drift_report_path=self.data_validation_config.drift_report_dir
             )
             logging.info('Data validation completed successfully.')
-
-            
             return data_validation_artifact
         except Exception as e:
             raise CustomException(e, sys)

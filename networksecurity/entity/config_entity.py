@@ -69,3 +69,20 @@ class DataTransformationConfig:
       self.preprocesss_file_path:str=os.path.join(
          self.data_transformation_dir,traning_pipline.PREPROCESSING_DIR_NAME,traning_pipline.PREPROCESSING_OBJECT_FILE_NAME ## preprocess file obj
       )
+
+class ModelTrainerConfig:
+   def __init__(self,traning_pipline_config:TraningPiplineConfig) -> None:
+      self.model_triner_dir:str=os.path.join(
+         traning_pipline_config.artifact_dir, traning_pipline.MODEL_TRINER_DIR_NAME ## creating model trainer dir
+      )
+      self.model_train_metrics_path:str=os.path.join(
+         self.model_triner_dir,traning_pipline.MODEL_TRINER_MODEL_METRICS_DIR,traning_pipline.MODEL_TRINER_MODEL_TRAIN_METRICS_FILE
+      )
+      self.model_test_metrics_path:str=os.path.join(
+         self.model_triner_dir,traning_pipline.MODEL_TRINER_MODEL_METRICS_DIR,traning_pipline.MODEL_TRINER_MODEL_TEST_METRICS_FILE
+      )
+      self.model_file_path=os.path.join(
+         self.model_triner_dir,traning_pipline.MODEL_FILE_DIR,traning_pipline.MODEL_FILE_NAME
+      )
+      self.model_expacted_accuracy:float=traning_pipline.MODEL_TRINER_EXPACTED_ACCURCY
+      self.model_overfitting_underfitting_ratio=traning_pipline.MODEL_TRINER_MODEL_OVERFITTING_UNDERFITTING_TH

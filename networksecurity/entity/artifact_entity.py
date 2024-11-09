@@ -20,9 +20,15 @@ class DataTransformationArtifact:
     test_arr_path:str
     preprocess_obj_path:str
   
+@dataclass
+class ClassificationMetricsArtifact:
+    f1_score:float
+    precision_score:float
+    recall_score:float
 
 @dataclass
 class ModelTrainerArtifact:
     trained_model_file_path:str
-    train_metric_artifact:dict
-    test_metric_artifact:dict
+    train_metric_artifact:ClassificationMetricsArtifact
+    test_metric_artifact:ClassificationMetricsArtifact
+   

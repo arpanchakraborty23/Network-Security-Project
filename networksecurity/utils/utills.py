@@ -91,12 +91,12 @@ def save_numpy_arr(file, arr):
 def load_numpy_arr(filepath):
     try:
         with open(filepath,'rb') as f:
-            obj=np.load(f,allow_pickle=True)
-            logging.info(f'{obj} load successfully ')
-        return obj
+            data=np.load(f,allow_pickle=True)
+            logging.info(f'{data} load successfully ')
+        return data
     except Exception as e:
         raise CustomException(e,sys)
-
+    
 def model_evaluatuion(x_train,y_train,x_test,y_test,models,prams):
     try:
             logging.info(' model evaluation started')
@@ -133,6 +133,7 @@ def model_evaluatuion(x_train,y_train,x_test,y_test,models,prams):
     except Exception as e:
         logging.info(f' Error {str(e)}')
         raise CustomException(sys,e)
+
     
 def load_obj(file_path):
     with open(file_path,'rb') as f:
@@ -140,9 +141,33 @@ def load_obj(file_path):
 
     return data
 
-def save_json(data,filename):
-  
-        with open(filename,'w') as j:
-            json.dump(data,j,indent=4)
+import os
+
+def save_text(data, file_path):
+    try:
+        # Extract the directory path and create missing directories if needed
+        dir_path = os.path.dirname(file_path)
+        os.makedirs(dir_path, exist_ok=True)
+        
+        # Write the text data to the file
+        with open(file_path, 'w') as f:
+            f.write(data)
+    except Exception as e:
+        # Print an error message in case of issues during the process
+        raise CustomException(e,sys)
+
+
+def save_as_json(obj, file_path):
+    try:
+        dir_path = os.path.dirname(file_path)
+        os.makedirs(dir_path, exist_ok=True)
+
+        with open(file_path, 'w') as f:
+            json.dump(obj, f, indent=4)
+    except Exception as e:
+        logging(f"Error saving JSON to {file_path}: {e}")
+        print(f"Error saving JSON to {file_path}: {e}")
+        raise CustomException(e,sys)
+
 
 
