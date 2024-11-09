@@ -40,14 +40,32 @@ class DataValidationConfig:
          self.data_validation_dir,traning_pipline.DATA_VALIDATION_DRIFT_REPORT_DIR,traning_pipline.DATA_VALIDATION_DRIFT_REPORT_FILE_NAME # data validation dir, drift report dir, report name
 		)
       self.valid_traning_data_store_path:str=os.path.join(
-         traning_pipline_config.artifact_dir, traning_pipline.DATA_INGESTION__DIR, traning_pipline.TRAIN_FILE_NAME  ## artifacts folder , ingest folder , train data path
+         self.valid_dir_name, traning_pipline.TRAIN_FILE_NAME  ## artifacts folder , ingest folder , train data path
 		)
       self.valid_test_data_store_path:str=os.path.join(
-         traning_pipline_config.artifact_dir,traning_pipline.DATA_INGESTION__DIR, traning_pipline.TEST_FILE_NAME ## artifacts folder , ingest folder , test data path
+         self.valid_dir_name,traning_pipline.TEST_FILE_NAME ## artifacts folder , ingest folder , test data path
 		)
       self.invalid_traning_data_store_path:str=os.path.join(
-         traning_pipline_config.artifact_dir, traning_pipline.DATA_INGESTION__DIR, traning_pipline.TRAIN_FILE_NAME  ## artifacts folder , ingest folder , train data path
+         self.valid_dir_name, traning_pipline.TRAIN_FILE_NAME  ## artifacts folder , ingest folder , train data path
 		)
       self.invalid_test_data_store_path:str=os.path.join(
-         traning_pipline_config.artifact_dir,traning_pipline.DATA_INGESTION__DIR, traning_pipline.TEST_FILE_NAME ## artifacts folder , ingest folder , test data path
+         self.valid_dir_name, traning_pipline.TEST_FILE_NAME ## artifacts folder , ingest folder , test data path
 		)
+      self.schema_file_path = os.path.join(
+         traning_pipline.SCHEMA_File_DIR,traning_pipline.SCHEMA_File_NAME # schema file dir
+      )
+
+class DataTransformationConfig:
+   def __init__(self,traning_pipline_config:TraningPiplineConfig) -> None:
+      self.data_transformation_dir:str=os.path.join(
+         traning_pipline_config.artifact_dir, traning_pipline.DATA_TRANSFORMATION_DIR_NAME ## creating data transformation dir name
+      )
+      self.data_transformation_train_path:str=os.path.join(
+         self.data_transformation_dir,traning_pipline.DATA_TRANSFORMATION_TRANSFORMED_DATA_DIR,traning_pipline.DATA_TRANSFORMATION_TRANSFORMED_TRAIN_FILE_NAME # traning file path
+      )
+      self.data_transformation_test_path:str=os.path.join(
+         self.data_transformation_dir,traning_pipline.DATA_TRANSFORMATION_TRANSFORMED_DATA_DIR,traning_pipline.DATA_TRANSFORMATION_TRANSFORMED_TEST_FILE_NAME ## test file path
+      )
+      self.preprocesss_file_path:str=os.path.join(
+         self.data_transformation_dir,traning_pipline.PREPROCESSING_DIR_NAME,traning_pipline.PREPROCESSING_OBJECT_FILE_NAME ## preprocess file obj
+      )

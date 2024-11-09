@@ -12,8 +12,7 @@ from typing import List
 from sklearn.model_selection import train_test_split
 from dotenv import load_dotenv
 load_dotenv()
-from networksecurity.logging.logger import logging
-from networksecurity.exception.exception import CustomException
+
 
 
 class DataIngestion:
@@ -71,7 +70,8 @@ class DataIngestion:
          self.split_data_into_train_test(df=df)
 
          data_ingestion_artifacts=DataIngestionArtifact(
-            trained_file_path=self.config.traning_data_store_path,test_file_path=self.config.test_data_store_path
+            trained_file_path=self.config.traning_data_store_path,
+            test_file_path=self.config.test_data_store_path
 			)
          return data_ingestion_artifacts
       

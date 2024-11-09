@@ -16,7 +16,6 @@ from networksecurity.exception.exception import CustomException
 from pymongo import MongoClient
 
 
-
 def read_yaml(file_path:str):
     try:
         with open(file_path) as f:
@@ -36,17 +35,6 @@ def write_yaml_file(file_path: str, content: object, replace: bool = False):
             yaml.dump(content, file)
     except Exception as e:
         raise CustomException(e, sys)
-
-
-@ensure_annotations   
-def create_dir(file_path:list,verbose=True):
-    try:
-        for path in file_path:
-            os.makedirs(path,exist_ok=True)
-            if verbose:
-                logging.info(f"created directory at: {path}")    
-    except Exception as e:
-        raise CustomException(sys,e) 
     
 def Data_read_from_db(url,db,collection):
     client=MongoClient(url)
@@ -80,8 +68,34 @@ def input_csv_to_db(input_csv,url,db,collection):
     
     
 def save_obj(file_path,obj):
+    dir_path = os.path.dirname(file_path)
+    os.makedirs(dir_path, exist_ok=True)
     with open(file_path,'wb') as f:
         pickle.dump(obj,f)
+    
+        logging.info(f'{obj} save successfully')
+
+def save_numpy_arr(file, arr):
+    try:
+        dir_path = os.path.dirname(os.path.abspath(file))
+        os.makedirs(dir_path, exist_ok=True)
+        # Save the numpy array
+        with open(file, 'wb') as file:
+            np.save(file, arr)
+            print(f'Successfully saved array in {file}')
+            logging.info(f'Successfully saved array in {file}')
+            
+    except Exception as e:
+        raise CustomException(e, sys)
+    
+def load_numpy_arr(filepath):
+    try:
+        with open(filepath,'rb') as f:
+            obj=np.load(f,allow_pickle=True)
+            logging.info(f'{obj} load successfully ')
+        return obj
+    except Exception as e:
+        raise CustomException(e,sys)
 
 def model_evaluatuion(x_train,y_train,x_test,y_test,models,prams):
     try:
@@ -113,10 +127,6 @@ def model_evaluatuion(x_train,y_train,x_test,y_test,models,prams):
                 print(f"Training {model} accuracy {test_model_score}")
 
                 report[list(models.keys())[i]] =  test_model_score
-
-               
-
-                
 
             return report
         

@@ -9,4 +9,6 @@ Dockerfile
 certifi
 scikit-learn
 scipy
+dill
+pyyaml
 -e .
