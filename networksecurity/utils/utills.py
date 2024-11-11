@@ -141,21 +141,6 @@ def load_obj(file_path):
 
     return data
 
-import os
-
-def save_text(data, file_path):
-    try:
-        # Extract the directory path and create missing directories if needed
-        dir_path = os.path.dirname(file_path)
-        os.makedirs(dir_path, exist_ok=True)
-        
-        # Write the text data to the file
-        with open(file_path, 'w') as f:
-            f.write(data)
-    except Exception as e:
-        # Print an error message in case of issues during the process
-        raise CustomException(e,sys)
-
 
 def save_as_json(obj, file_path):
     try:

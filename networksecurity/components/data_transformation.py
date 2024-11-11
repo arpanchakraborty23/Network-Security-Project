@@ -80,6 +80,9 @@ class DataTransformation:
                 file_path=self.data_transformaation_config.preprocesss_file_path,
                 obj=preprocess_obj
             )
+            
+            ## final model
+            save_obj(file_path='final_model/preprocesser.pkl',obj=preprocess_obj)
             print('preprocesser save successfully')
             data_transformation_artifacts=DataTransformationArtifact(
                 train_arr_path=self.data_transformaation_config.data_transformation_train_path,

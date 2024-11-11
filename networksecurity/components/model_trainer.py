@@ -92,13 +92,13 @@ class ModelTrainer:
                 'DesisionTree': {
                     'criterion': ['gini', 'entropy'],
                     'max_depth': [None, 10, 20],
-                    # 'min_samples_split': [2, 5, 10],
-                    # 'min_samples_leaf': [1, 2, 4]
+                    'min_samples_split': [2, 5, 10],
+                    'min_samples_leaf': [1, 2, 4]
                 },
                 'RandomForest': {
                     'n_estimators': [50, 100, 20],
-                    # 'max_depth': [None, 10, 20],
-                    # 'min_samples_split': [2, 5, 10],
+                    'max_depth': [None, 10, 20],
+                    'min_samples_split': [2, 5, 10],
                     'min_samples_leaf': [1, 2, 4]
                 },
                 'BaggingClf': {
@@ -106,9 +106,9 @@ class ModelTrainer:
                     'max_samples': [0.5, 0.7, 0.9]
                 },
                 'Xgboost': {
-                    # 'n_estimators': [50, 100, 20],
-                    # 'learning_rate': [0.01, 0.1,],
-                    # 'max_depth': [3, 5, 7],
+                    'n_estimators': [50, 100, 20],
+                    'learning_rate': [0.01, 0.1,],
+                    'max_depth': [3, 5, 7],
                     'subsample': [0.6, 0.8, 1.0],
                     'colsample_bytree': [0.6, 0.8, 1.0]
                 }
@@ -171,6 +171,9 @@ class ModelTrainer:
                 file_path=self.model_trainer_config.model_file_path,
                 obj=network_model
             )
+
+            ## final model
+            save_obj(file_path='final_model/model.pkl',obj=best_model)
             logging.info(f'Model save in {self.model_trainer_config.model_file_path}')
 
             return classification_traning_metrics,classification_test_metrics

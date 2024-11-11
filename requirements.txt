@@ -12,4 +12,6 @@ scipy
 dill
 pyyaml
 xgboost
+fastapi
+uvicorn
 -e .
