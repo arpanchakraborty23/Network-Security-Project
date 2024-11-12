@@ -23,6 +23,8 @@ PREPROCESSING_OBJECT_FILE_NAME: str = "preprocessing.pkl"
 MODEL_FILE_DIR:str="model"
 MODEL_FILE_NAME:str="model.pkl"
 
+TRANING_S3_BUCKER='network-security-project'
+
 """ 
     Data Ingestion related constant 
 """

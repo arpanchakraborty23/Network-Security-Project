@@ -1,5 +1,6 @@
 import os
 import sys
+from datetime import datetime
 from networksecurity.logging.logger import logging
 from networksecurity.exception.exception import CustomException
 from networksecurity.components.data_ingestion import DataIngestion
@@ -9,11 +10,12 @@ from networksecurity.components.model_trainer import ModelTrainer
 
 from networksecurity.entity.config_entity import DataIngestionConfig,TraningPiplineConfig,DataValidationConfig,DataTransformationConfig,ModelTrainerConfig
 from networksecurity.entity.artifact_entity import DataIngestionArtifact,DataValidationArtifact,DataTransformationArtifact,ModelTrainerArtifact
-
-
+from networksecurity.constant.traning_pipline import TRANING_S3_BUCKER
+from networksecurity.cloud.s3_syncer import S3Sync
 class TraningPipline:
     def __init__(self) -> None:
         self.traning_pipline_config=TraningPiplineConfig()
+        self.s3_sync=S3Sync()
 
     def start_data_ingestion(self):
         try:
@@ -80,6 +82,20 @@ class TraningPipline:
             logging.info(f'Error in model train {str(e)}')
             raise CustomException(e,sys)
     
+    def sync_artifact_dir_to_s3(self):
+        try:
+            aws_bucket_url=f's3://{TRANING_S3_BUCKER}/Artifacts/{self.traning_pipline_config.timestamp}'
+            self.s3_sync.sync_folder_to_s3(folder=self.traning_pipline_config.artifact_dir,aws_bucket_url=aws_bucket_url)
+        except Exception as e:
+            raise CustomException(e,sys)
+        
+    def sync_final_model_dir_to_s3(self):
+        try:
+            aws_bucket_url=f's3://{TRANING_S3_BUCKER}/final_model/{self.traning_pipline_config.timestamp}'
+            self.s3_sync.sync_folder_to_s3(folder=self.traning_pipline_config.artifact_dir,aws_bucket_url=aws_bucket_url)
+        except Exception as e:
+            raise CustomException(e,sys)
+    
     def run_pipline(self):
         try:
             logging.info('************************************ Traning Pipline Started ************************************')
@@ -88,6 +104,8 @@ class TraningPipline:
             data_transformation_artifact=self.start_data_transformation(data_validation_artifacts=data_validation_artifact)
             model_trainer_artifact=self.start_model_train(data_transformation_artifacts=data_transformation_artifact)
 
+            self.sync_artifact_dir_to_s3()
+            self.sync_final_model_dir_to_s3()
             logging.info('************************************ Traning Pipline Completed ************************************')
 
             return model_trainer_artifact

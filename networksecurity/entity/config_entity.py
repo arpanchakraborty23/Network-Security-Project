@@ -4,9 +4,11 @@ import os
 
 class TraningPiplineConfig:
     def __init__(self) -> None:
+      self.timestamp=datetime.now().strftime("%m_%d_%Y_%H_%M_%S")
       self.pipline_name=traning_pipline.PIPELINE_NAME   
       self.artifact_name=traning_pipline.ARTIFACT_DIR
-      self.artifact_dir=os.path.join(self.artifact_name)
+      self.artifact_dir=os.path.join(self.artifact_name,self.timestamp)
+      self.model_dir=os.path.join('final_model')
       
 class DataIngestionConfig:
       def __init__(self,traning_pipline_config:TraningPiplineConfig) -> None:
